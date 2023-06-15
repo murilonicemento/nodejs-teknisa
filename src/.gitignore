@@ -1,0 +1,21 @@
+# Módulos do Node.js
+node_modules/
+
+# Arquivos gerados pelo npm
+package-lock.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos de build
+build/
+dist/
+
+# Arquivos de ambiente
+.env
+
+# Outros arquivos gerados ou específicos do projeto
+.DS_Store
+.vscode/
