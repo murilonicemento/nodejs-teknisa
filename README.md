@@ -7,14 +7,13 @@ Este é um exemplo de um README para criar uma API com Node.js que permite visua
 - Node.js
 - Express.js
 - SQLite
-- Sequelize (ORM para SQLite)
+- Sequelize
 
 ## Pré-requisitos
 
 Certifique-se de ter o seguinte instalado no seu ambiente de desenvolvimento:
 
 - Node.js: [Instalação do Node.js](https://nodejs.org)
-- SQLite: [Instalação do SQLite](https://www.sqlite.org/download.html)
 
 ## Configuração
 
@@ -43,31 +42,23 @@ npm start
 - Visualizar todos os programadores:
 
   - Método: GET
-  - Endpoint: `/programmers`
-
-- Visualizar um programador específico:
-
-  - Método: GET
-  - Endpoint: `/programmers/:id`
-  - Substitua `:id` pelo ID do programador desejado.
+  - Endpoint: `/retrieverProgramme`
 
 - Cadastrar um novo programador:
 
   - Método: POST
-  - Endpoint: `/programmers`
+  - Endpoint: `/createProgrammer`
   - Corpo da requisição: JSON contendo os dados do programador.
 
 - Atualizar um programador existente:
 
   - Método: PUT
-  - Endpoint: `/programmers/:id`
-  - Substitua `:id` pelo ID do programador que deseja atualizar.
+  - Endpoint: `/updateProgrammer`
   - Corpo da requisição: JSON contendo os dados atualizados do programador.
 
 - Deletar um programador:
   - Método: DELETE
-  - Endpoint: `/programmers/:id`
-  - Substitua `:id` pelo ID do programador que deseja deletar.
+  - Endpoint: `/deleteProgrammer`
 
 ## Contribuição
 
