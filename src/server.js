@@ -21,15 +21,8 @@ app.post("/createProgrammer", async (request, response) => {
   try {
     const parameters = request.body;
     const properties = ["name", "javascript", "java", "python"];
-    const check = properties.every((property) => {
-      return property in parameters;
-    });
 
-    if (!check) {
-      const propertiesStrings = properties.join(",");
-      response.send(`All parameters needed to create a programmer must be sent ${propertiesStrings}`);
-      return;
-    }
+    validateProperties(properties, parameters, "every");
 
     const newProgrammer = await programmer.create({
       name: parameters.name,
@@ -48,7 +41,7 @@ app.get("/retrieverProgrammer", async (request, response) => {
   try {
     const parameters = request.body;
 
-    if ("id" in params) {
+    if ("id" in parameters) {
       const record = await programmer.findByPk(parameters.id);
 
       if (record) {
@@ -82,49 +75,61 @@ app.delete("/deleteProgrammer", async (request, response) => {
 });
 
 app.put("/updateProgrammer", async (request, response) => {
-  const parameters = request.body;
 
-  if (!("id" in parameters)) {
-    response.send("Missing id in request body");
-    return;
+  try {
+    const parameters = request.body;
+
+    const record = await validatedID(parameters);
+
+    const properties = ["name", "javascript", "java", "python"];
+
+    validateProperties(properties, parameters, "some")
+
+    record.name = parameters.name || record.name;
+    record.javascript = parameters.javascript || record.javascript;
+    record.java = parameters.java || record.java;
+    record.python = parameters.python || record.python;
+
+    await record.save();
+
+    response.send(`${record.id} ${record.name} - Updated successfully`);
+  } catch (error) {
+    response.send(error);
   }
 
-  const record = await programmer.findByPk(params.id);
-
-  const properties = ["name", "javascript", "java", "python"];
-
-  const check = properties.every((property) => {
-    return property in parameters;
-  });
-
-  if (!check) {
-    const propertiesStrings = properties.join(",");
-    response.send(`All parameters needed to create a programmer must be sent ${propertiesStrings}`);
-    return;
-  }
-
-  record.name = params.name || record.name;
-  record.javascript = params.javascript || record.javascript;
-  record.java = params.java || record.java;
-  record.python = params.python || record.python;
-
-  await record.save();
-
-  response.send(`${record.id} ${record.name} - Updated successfully`);
 })
 
 app.listen(port, () => console.log(`Now Listening on port ${port}`));
 
-const validatedID = async () => {
-  if (!("id" in parameters)) {
-    response.send("Missing id in request body");
-    return;
+const validatedID = async (parameters) => {
+  try {
+    if (!("id" in parameters)) {
+      throw "Missing id in request body";
+    }
+
+    const record = await programmer.findByPk(parameters.id);
+
+    if (!record) {
+      throw "Programmer ID not found";
+
+    }
+  } catch (error) {
+    throw error;
   }
 
-  const record = await programmer.findByPk(params.id);
+}
 
-  if (!record) {
-    response.send("Programmer ID not found");
-    return;
+const validateProperties = (properties, parameters, fn) => {
+  try {
+    const check = properties[fn]((property) => {
+      return property in parameters;
+    });
+
+    if (!check) {
+      const propertiesStrings = properties.join(", ");
+      throw `All parameters needed to create a programmer must be sent ${propertiesStrings}`;
+    }
+  } catch (error) {
+    throw error;
   }
 }
